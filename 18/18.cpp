@@ -1,13 +1,15 @@
 #include <iostream>
+#include <cmath>
+#include <ctime>
 
 using namespace std;
 
 //playing fields
-string field3x3[9]{"#", "#", "#", "#", "#", "#", "#", "#", "#" };
+string field3x3[9]{" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "};
 
-string field4x4[16]{"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"};
+string field4x4[16]{" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "," 10"," 11"," 12"," 13"," 14"," 15"," 16"};
 
-string field5x5[25]{"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"};
+string field5x5[25]{" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "," 10"," 11"," 12"," 13"," 14"," 15"," 16"," 17"," 18"," 19"," 20"," 21"," 22"," 23"," 24"," 25"};
 
 //color codes
 const string standart = "0";
@@ -21,7 +23,7 @@ const string violet = "95";
 const string blue = "96";
 const string white = "97";
 
-//variable for chosen field
+//variable for choosen field
 int chsField = 1;
 
 //colors for X and O
@@ -40,7 +42,7 @@ string selectFirstTurn(int chs) {
 	default:
 		cin.clear();
 		cin.ignore();
-		cout << "Incorrect color, returning standart first turn\n\n";
+		cout << "Incorrect symbol, returning standart first turn\n\n";
 		return "X";
 	}
 }
@@ -140,10 +142,9 @@ void handleChosenField() {
 void handleRules() {
 	system("cls");
 
-	cout << "The game is played on a grid. You are X, your friend (or the computer in this case) is O.\n";
-	cout << "Players take turns putting their marks in empty squares. The first player to get 3 of her\n";
-	cout << "marks in a row is the winner. When all squares are full the game is over. If no player has\n";
-	cout << "3 marks in a row, the game ends in a tie.\n\n";
+	cout << "The game is played on a grid. Players take turns putting their marks in empty squares.\n";
+	cout << " The first player to get 3 of her marks in a row is the winner. When all squares are full\n";
+	cout << "the game is over. If no player has 3 marks in a row, the game ends in a tie.\n\n";
 
 	waitingForInput();
 
@@ -162,20 +163,304 @@ void handleError() {
 	cout << "BREAK ME COMPLETELY!!!\n\n";
 }
 
-void handlePeopleGame(string field[]) {
-	while (true) {
-
+string switchTurn(string turn) {
+	if (turn == "X") {
+		return "O";
+	}
+	else {
+		return "X";
 	}
 }
 
-void handleBotGame(string field[]) {
-	while (true) {
+void showField(string field[], int arrayLen) {
+	int flagDelimeter = int(sqrt(arrayLen));
 
+	for (int i = 0; i < arrayLen; i++) {
+		if (field[i] == "X") {
+			cout << "|\x1b[" << colorX << "m" << "  " << field[i]  << "\x1b[0m  ";
+		}
+		else if (field[i] == "O") {
+			cout << "|\x1b[" << colorO << "m" << "  " << field[i] << "\x1b[0m  ";
+		}
+		else {
+			cout << "| " << field[i] << "  ";
+		}
+
+		if ((i + 1) % flagDelimeter == 0) {
+			cout << "|\n";
+		}
+	}
+	cout << "\n\n";
+}
+
+bool checkWin3(string field[], int arrayLen) {
+	if (field[0] == field[1] && field[1] == field[2])		return true;
+	else if (field[3] == field[4] && field[4] == field[5])  return true;
+	else if (field[6] == field[7] && field[7] == field[8])  return true;
+
+	else if (field[0] == field[3] && field[3] == field[6])  return true;
+	else if (field[1] == field[4] && field[4] == field[7])  return true;
+	else if (field[2] == field[5] && field[5] == field[8])  return true;
+
+	else if (field[0] == field[4] && field[4] == field[8])  return true;
+	else if (field[2] == field[4] && field[4] == field[6])  return true;
+	else return false;
+}
+
+bool checkWin4(string field[], int arrayLen) {
+	if (field[0] == field[1] && field[1] == field[2]) return true;
+	else if (field[1] == field[2] && field[2] == field[3]) return true;
+	else if (field[4] == field[5] && field[5] == field[6]) return true;
+	else if (field[5] == field[6] && field[6] == field[7]) return true;
+	else if (field[8] == field[9] && field[9] == field[10]) return true;
+	else if (field[9] == field[10] && field[10] == field[11]) return true;
+	else if (field[12] == field[13] && field[13] == field[14]) return true;
+	else if (field[13] == field[14] && field[14] == field[15]) return true;
+
+	else if (field[0] == field[4] && field[4] == field[8]) return true;
+	else if (field[4] == field[8] && field[8] == field[12]) return true;
+	else if (field[1] == field[5] && field[5] == field[9]) return true;
+	else if (field[5] == field[9] && field[9] == field[13]) return true;
+	else if (field[2] == field[6] && field[6] == field[10]) return true;
+	else if (field[6] == field[10] && field[10] == field[14]) return true;
+	else if (field[3] == field[7] && field[7] == field[11]) return true;
+	else if (field[7] == field[11] && field[11] == field[15]) return true;
+
+	else if (field[0] == field[5] && field[5] == field[10]) return true;
+	else if (field[5] == field[10] && field[10] == field[15]) return true;
+	else if (field[3] == field[6] && field[6] == field[9]) return true;
+	else if (field[6] == field[9] && field[9] == field[12]) return true;
+	else if (field[1] == field[6] && field[6] == field[11]) return true;
+	else if (field[4] == field[9] && field[9] == field[14]) return true;
+	else return false;
+}
+
+bool checkWin5(string field[], int arrayLen) {
+
+	if (field[0] == field[1] && field[1] == field[2]) return true;
+	else if (field[1] == field[2] && field[2] == field[3]) return true;
+	else if (field[2] == field[3] && field[3] == field[4]) return true;
+	else if (field[5] == field[6] && field[6] == field[7]) return true;
+	else if (field[6] == field[7] && field[7] == field[8]) return true;
+	else if (field[7] == field[8] && field[8] == field[9]) return true;
+	else if (field[10] == field[11] && field[11] == field[12]) return true;
+	else if (field[11] == field[12] && field[12] == field[13]) return true;
+	else if (field[12] == field[13] && field[13] == field[14]) return true;
+	else if (field[15] == field[16] && field[16] == field[17]) return true;
+	else if (field[16] == field[17] && field[17] == field[18]) return true;
+	else if (field[17] == field[18] && field[18] == field[19]) return true;
+	else if (field[20] == field[21] && field[21] == field[22]) return true;
+	else if (field[21] == field[22] && field[22] == field[23]) return true;
+	else if (field[22] == field[23] && field[23] == field[24]) return true;
+
+	else if (field[0] == field[5] && field[5] == field[10]) return true;
+	else if (field[5] == field[10] && field[10] == field[15]) return true;
+	else if (field[10] == field[15] && field[15] == field[20]) return true;
+	else if (field[1] == field[6] && field[6] == field[11]) return true;
+	else if (field[6] == field[11] && field[11] == field[16]) return true;
+	else if (field[11] == field[16] && field[16] == field[21]) return true;
+	else if (field[2] == field[7] && field[7] == field[12]) return true;
+	else if (field[7] == field[12] && field[12] == field[17]) return true;
+	else if (field[12] == field[17] && field[17] == field[22]) return true;
+	else if (field[3] == field[8] && field[8] == field[13]) return true;
+	else if (field[8] == field[13] && field[13] == field[18]) return true;
+	else if (field[13] == field[18] && field[18] == field[23]) return true;
+	else if (field[4] == field[9] && field[9] == field[14]) return true;
+	else if (field[9] == field[14] && field[14] == field[19]) return true;
+	else if (field[14] == field[19] && field[19] == field[24]) return true;
+
+	else if (field[0] == field[6] && field[6] == field[12]) return true;
+	else if (field[1] == field[7] && field[7] == field[13]) return true;
+	else if (field[2] == field[8] && field[8] == field[14]) return true;
+	else if (field[5] == field[11] && field[1] == field[17]) return true;
+	else if (field[6] == field[12] && field[12] == field[18]) return true;
+	else if (field[7] == field[13] && field[13] == field[19]) return true;
+	else if (field[10] == field[16] && field[16] == field[22]) return true;
+	else if (field[11] == field[17] && field[17] == field[23]) return true;
+	else if (field[12] == field[18] && field[18] == field[24]) return true;
+	else if (field[2] == field[6] && field[6] == field[10]) return true;
+	else if (field[3] == field[7] && field[7] == field[11]) return true;
+	else if (field[4] == field[8] && field[8] == field[12]) return true;
+	else if (field[7] == field[11] && field[11] == field[15]) return true;
+	else if (field[8] == field[12] && field[12] == field[16]) return true;
+	else if (field[9] == field[13] && field[13] == field[17]) return true;
+	else if (field[10] == field[16] && field[16] == field[22]) return true;
+	else if (field[11] == field[17] && field[17] == field[23]) return true;
+	else if (field[12] == field[18] && field[18] == field[24]) return true;
+	else if (field[12] == field[16] && field[16] == field[20]) return true;
+	else if (field[13] == field[17] && field[17] == field[21]) return true;
+	else if (field[14] == field[18] && field[18] == field[22]) return true;
+	else return false;
+}
+
+
+void handlePeopleGame(string field[], int arrayLen) {
+	int fullCheck = 0;
+	string turn = firstTurn;
+	int cell;
+
+	bool isWinnerKnown = false;
+
+	while (!isWinnerKnown) {
+		system("cls");
+
+		showField(field, arrayLen);
+
+		cout << "The player playing for the " << turn << " selects the cell: ";
+		cin >> cell;
+		cell--;
+		if (cell < 0 || cell > arrayLen - 1 || field[cell] == "X" || field[cell] == "O") {
+			cin.clear();
+			cin.ignore();
+			cout << "Incorrect value, try again\n\n";
+			waitingForInput();
+		}
+		else {
+			field[cell] = turn;
+			switch (chsField) {
+			case 1:
+				isWinnerKnown = checkWin3(field, arrayLen);
+				break;
+			case 2:
+				isWinnerKnown = checkWin4(field, arrayLen);
+				break;
+			case 3:
+				isWinnerKnown = checkWin5(field, arrayLen);
+				break;
+			}
+			fullCheck++;
+			if (isWinnerKnown) {
+				system("cls");
+
+				showField(field, arrayLen);
+
+				cout << "The player " << turn << " wins!\n";
+				waitingForInput();
+				exit(0);
+			}
+			if (fullCheck == arrayLen) {
+				system("cls");
+
+				showField(field, arrayLen);
+
+				cout << "Draw!\n";
+				waitingForInput();
+				exit(0);
+			}
+			turn = switchTurn(turn);
+		}
 	}
 }
 
+void handleBotGame(string field[], int arrayLen) {
+	int fullCheck = 0;
+	string turn = firstTurn;
+	int cell;
+	int botTurn;
+
+	bool isWinnerKnown = false;
+
+	while (!isWinnerKnown) {
+		if (turn == firstTurn) {
+			system("cls");
+
+			showField(field, arrayLen);
+
+			cout << "The player playing for the " << turn << " selects the cell: ";
+			cin >> cell;
+			cell--;
+			if (cell < 0 || cell > arrayLen - 1 || field[cell] == "X" || field[cell] == "O") {
+				cin.clear();
+				cin.ignore();
+				cout << "Incorrect value, try again\n\n";
+				waitingForInput();
+			}
+			else {
+				field[cell] = turn;
+				switch (chsField) {
+				case 1:
+					isWinnerKnown = checkWin3(field, arrayLen);
+					break;
+				case 2:
+					isWinnerKnown = checkWin4(field, arrayLen);
+					break;
+				case 3:
+					isWinnerKnown = checkWin5(field, arrayLen);
+					break;
+				}
+				fullCheck++;
+				if (isWinnerKnown) {
+					system("cls");
+
+					showField(field, arrayLen);
+
+					cout << "The player " << turn << " wins!\n";
+					waitingForInput();
+					exit(0);
+				}
+				if (fullCheck == arrayLen) {
+					system("cls");
+
+					showField(field, arrayLen);
+
+					cout << "Draw!\n";
+					waitingForInput();
+					exit(0);
+				}
+				turn = switchTurn(turn);
+			}
+		}
+		else {
+			while (true) {
+				botTurn = rand() % arrayLen;
+				botTurn--;
+				if (botTurn < 0 || botTurn > arrayLen - 1 || field[botTurn] == "X" || field[botTurn] == "O")
+				{
+					system("cls");
+					continue;
+				}
+				else {
+					field[botTurn] = turn;
+					break;
+				}
+			}
+			switch (chsField) {
+			case 1:
+				isWinnerKnown = checkWin3(field, arrayLen);
+				break;
+			case 2:
+				isWinnerKnown = checkWin4(field, arrayLen);
+				break;
+			case 3:
+				isWinnerKnown = checkWin5(field, arrayLen);
+				break;
+			}
+			fullCheck++;
+			if (isWinnerKnown) {
+				system("cls");
+
+				showField(field, arrayLen);
+
+				cout << "The player " << turn << " wins!\n";
+				waitingForInput();
+				exit(0);
+			}
+			if (fullCheck == arrayLen) {
+				system("cls");
+
+				showField(field, arrayLen);
+
+				cout << "Draw!\n";
+				waitingForInput();
+				exit(0);
+			}
+			turn = switchTurn(turn);
+		}
+	}
+}
 
 int main() {
+	srand(static_cast<unsigned int>(time(0)));
 	int mainMenu;
 	
 	while (true) {
@@ -197,26 +482,32 @@ int main() {
 					if (gameMenu == 1) {
 						switch (chsField) {
 							case 1: {
-								handlePeopleGame(field3x3);
+								int arrayLen = sizeof(field3x3) / sizeof(field3x3[0]);
+								handlePeopleGame(field3x3, arrayLen);
 							}
 							case 2: {
-								handlePeopleGame(field4x4);
+								int arrayLen = sizeof(field4x4) / sizeof(field4x4[0]);
+								handlePeopleGame(field4x4, arrayLen);
 							}
 							case 3: {
-								handlePeopleGame(field4x4);
+								int arrayLen = sizeof(field5x5) / sizeof(field5x5[0]);
+								handlePeopleGame(field5x5, arrayLen);
 							}
 						}
 					}
 					else if (gameMenu == 2) {
-							switch (chsField) {
+						switch (chsField) {
 							case 1: {
-								handleBotGame(field3x3);
+								int arrayLen = sizeof(field3x3) / sizeof(field3x3[0]);
+								handleBotGame(field3x3, arrayLen);
 							}
 							case 2: {
-								handleBotGame(field4x4);
+								int arrayLen = sizeof(field4x4) / sizeof(field4x4[0]);
+								handleBotGame(field4x4, arrayLen);
 							}
 							case 3: {
-								handleBotGame(field4x4);
+								int arrayLen = sizeof(field5x5) / sizeof(field5x5[0]);
+								handleBotGame(field5x5, arrayLen);
 							}
 						}
 					}
@@ -228,6 +519,7 @@ int main() {
 						handleError();
 					}
 				}
+				break;
 			}
 			case 2: {
 				system("cls");
@@ -272,3 +564,6 @@ int main() {
 		}
 	}
 }
+
+
+
