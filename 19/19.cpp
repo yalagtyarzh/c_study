@@ -8,14 +8,17 @@ const string inputAmount = "[+]Choosing amount of questions\n\n[1]5\n[2]10\n[3]1
 const string inputHint = "[+]Choosing 50/50 enable\n\n[1]Yes\n[2]No\n\nChoose: ";
 const string inputUp = "[+]Choosing amount of UP\n\n[1]1\n[2]2\n[3]3\n[4]4\n[5]5\n\nChoose: ";
 
+const int answersSize = 4;
+const int questionSize = 15;
+
 struct Question {
     string question;
-    string answer[4];
+    string answer[answersSize];
     string hint[2];
     string correctAnswer;
 };
 
-Question question[15] = {
+Question question[questionSize] = {
     {"Состав пиццы?", {"Моцарелла", "Грузовик", "Конохахаххаха", "Жмых"}, {}, "Моцарелла"},
     {"Сколько будет 1+1?", {"2", "1", "5", "10"}, {}, "2"},
     {"Какой пол у Паши Кириченко?", {"ATTACK HELICOPTER", "Женский", "Мужской", "Плитка"}, {}, "ATTACK HELICOPTER"},
@@ -41,21 +44,21 @@ int timer = 5; //default timer for game (in mintues)
 int choose; //var for choosing
 
 void randomizeQuestions() {
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < questionSize; i++) {
         swap(question[i], question[rand() % 15]);
     }
 }
 
 void randomizeAnswers() {
-    for (int i = 0; i < 15; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (int i = 0; i < questionSize; i++) {
+        for (int j = 0; j < answersSize; j++) {
             swap(question[i].answer[j], question[i].answer[rand() % 4]);
         }
     }
 }
 
 void generateHint() {
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < questionSize; i++) {
         string incorrectAnswer = question[i].correctAnswer;
 
         question[i].hint[0] = question[i].correctAnswer;
@@ -218,12 +221,14 @@ void handleGame(int arraySize) {
         if (lives < 1) {
             system("cls");
             cout << "Вы ошиблись максимальное колличество раз. Игра закончена.\n\n";
+            waitingForInput();
             break;
         }
 
         if (static_cast<unsigned int>(time(0)) > deadline) {
             system("cls");
             cout << "Вы не успели ответить на все вопросы викторины. Игра закончена.\n\n";
+            waitingForInput();
             break;
         }
     }
