@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
@@ -7,26 +8,30 @@ const string inputAmount = "[+]Choosing amount of questions\n\n[1]5\n[2]10\n[3]1
 const string inputHint = "[+]Choosing 50/50 enable\n\n[1]Yes\n[2]No\n\nChoose: ";
 const string inputUp = "[+]Choosing amount of UP\n\n[1]1\n[2]2\n[3]3\n[4]4\n[5]5\n\nChoose: ";
 
-const string victorina[15][5] = {
-    {"Состав пиццы?", "Моцарелла", "Грузовик", "Конохахаххаха", "Жмых"},
-    {"Сколько будет 1+1?", "2", "1", "5", "10"},
-    {"Какой пол у Паши Кириченко?", "ATTACK HELICOPTER", "Женский", "Мужской", "Плитка"},
-    {"Кто?", "Корбен921", "Хрюша", "Шнырью", "Правша"},
-    {"Сколько сундуков у Кати в SW?", "32", "228", "79", "69"},
-    {"Какой ранг у Влада в доте?", "1680", "0","5000", "2100"},
-    {"Третий персонаж, которого встречает колобок?", "Волк", "Заяц", "Лиса", "Колобок"},
-    {"Вопрос?", "Ответ", "Какой?", "?сорпоВ", "私はこの気持ちを決して手放すことはありません"},
-    {"Кто такой дед", "Даня Соколов","КС(НЕПРАВИЛЬНО)", "Миша", "Я"},
-    {"Когда у Миши днюха?", "Сегодня","Завтра", "12 июля", "шиш"},
-    {"Как какать?", "Сидя", "Лежа", "Стоя", "Лежа пузом"},
-    {"Какого дистрибутива Linux не существует?", "Lesbian", "Ubuntu", "CentOS", "RedHat"},
-    {"В какой день недели Дима валяется в ванной?", "Выходные", "Пятница", "Понедельник", "Четверг"},
-    {"Какой Полина хлеб?", "Бородинский", "Хлебец", "Батон", "С маком"},
-    {"Как зовут кота Кати?", "Кнопа", "Мурзик", "Курсед", "Раилаг"}
+struct Question {
+    string question;
+    string answer[4];
+    string hint[2];
+    string correctAnswer;
 };
 
-int questions[15];
-int answers[4];
+Question question[15] = {
+    {"Состав пиццы?", {"Моцарелла", "Грузовик", "Конохахаххаха", "Жмых"}, {}, "Моцарелла"},
+    {"Сколько будет 1+1?", {"2", "1", "5", "10"}, {}, "2"},
+    {"Какой пол у Паши Кириченко?", {"ATTACK HELICOPTER", "Женский", "Мужской", "Плитка"}, {}, "ATTACK HELICOPTER"},
+    {"Кто?", {"Корбен921", "Хрюша", "Шнырью", "Правша"}, {}, "Корбен921"},
+    {"Сколько сундуков у Кати в SW?", {"32", "228", "79", "69"}, {}, "32"},
+    {"Какой ранг у Влада в доте?", {"1680", "0","5000", "2100"}, {}, "1680"},
+    {"Вопрос?", {"Ответ", "Какой?", "?сорпоВ", "私はこの気持ちを決して手放すことはありません"}, {}, "Ответ"},
+    {"Кто такой дед?", {"Даня Соколов","КС(НЕПРАВИЛЬНО)", "Миша", "Я"}, {}, "Даня Соколов"},
+    {"Когда у Миши днюха?", {"Сегодня","Завтра", "12 июля", "шиш"}, {}, "Сегодня"},
+    {"Как какать?", {"Сидя", "Лежа", "Стоя", "Лежа пузом"}, {}, "Сидя"},
+    {"Какого дистрибутива Linux не существует?", {"Lesbian", "Ubuntu", "CentOS", "RedHat"}, {}, "Lesbian"},
+    {"В какой день недели Дима валяется в ванной?", {"Выходные", "Пятница", "Понедельник", "Четверг"}, {},  "Выходные"},
+    {"Какой Полина хлеб?", {"Бородинский", "Хлебец", "Батон", "Сухарики"}, {}, "Бородинский"},
+    {"Как зовут кота Кати?", {"Кнопа", "Мурзик", "Курсед", "Раилаг"}, {}, "Кнопа"},
+    {"Третий зверь на пути колобка", {"Волк", "Заяц", "Лиса", "Колобок"}, {}, "Волк"},
+};
 
 int up = 3; //default for UP points
 int isHintEnable = 0; //default for 50/50 option
@@ -35,30 +40,42 @@ int timer = 5; //default timer for game (in mintues)
 
 int choose; //var for choosing
 
-int checkQuestion(int question, int arraySize) {
-    for (int i = 0; i < arraySize; i++) {
-        if (questions[i] == question) {
-            question = rand() % 15;
-            i = 0;
-        }
+void randomizeQuestions() {
+    for (int i = 0; i < 15; i++) {
+        swap(question[i], question[rand() % 15]);
     }
-    return question;
 }
 
-int checkAnswer(int answer) {
-    for (int i = 0; i < 4; i++) {
-        if (answers[i] == answer) {
-            answer = rand() % 4;
-            i = 0;
+void randomizeAnswers() {
+    for (int i = 0; i < 15; i++) {
+        for (int j = 0; j < 4; j++) {
+            swap(question[i].answer[j], question[i].answer[rand() % 4]);
         }
     }
-    return answer;
+}
+
+void generateHint() {
+    for (int i = 0; i < 15; i++) {
+        string incorrectAnswer = question[i].correctAnswer;
+
+        question[i].hint[0] = question[i].correctAnswer;
+
+        while (incorrectAnswer == question[i].correctAnswer) {
+            incorrectAnswer = question[i].answer[rand() % 4];
+        }
+
+        question[i].hint[1] = incorrectAnswer;
+
+        for (int j = 0; j < 2; j++) {
+            swap(question[i].hint[j], question[i].hint[rand() % 2]);
+        }
+    }
 }
 
 void handleError() {
     cin.clear();
     cin.ignore();
-    cout << "Incorrect input\n\n";
+    cout << "\nIncorrect input\n\n";
 }
 
 void waitingForInput() {
@@ -136,54 +153,83 @@ void display(string txt) {
 
 void handleGame(int arraySize) {
     srand(static_cast<unsigned int>(time(0)));
+
     int answer;
     int score = 0;
     int lives = up;
-    
+
+    if (isHintEnable) {
+        generateHint();
+    }
+
+    randomizeQuestions();
+
+    randomizeAnswers();
+
+    int deadline = static_cast<unsigned int>(time(0)) + 60 * timer;
+
     for (int i = 0; i < arraySize; i++) {
         system("cls");
-        int question = rand() % 15;
-        question = checkQuestion(question, arraySize);
-        questions[i] = question;
-        cout << victorina[question][0] << endl;
+
+        cout << "У тебя осталось: " << deadline - static_cast<unsigned int>(time(0)) << " секунд.\n\n";
+
+        cout << "[" << i + 1 << "]" << question[i].question << "\n\n";
 
         for (int j = 0; j < 4; j++) {
-            int answer = (rand() % 4) + 1;
-            answer = checkAnswer(answer);
-            answers[j] = answer;
-            cout <<  "[" << j + 1 << "]" " " << victorina[question][answer] << endl;
+            cout << "[" << j + 1 << "]" << question[i].answer[j] << "\n\n";
         }
 
-        cout << "Введите вариант ответа: ";
+        if (isHintEnable) {
+            cout << "Для вывода подсказки нажмите 5\n\n";
+        }
+
+        cout << "Введите номер ответа: ";
         cin >> answer;
         answer--;
 
         while (answer < 0 || answer > 3) {
-            cout << "Введи корректное значение, пожалуйста!\n\nВведите вариант ответа: ";
+            if (isHintEnable && answer == 4) {
+                cin.clear();
+                cin.ignore();
+                cout << "\n\nПравильный вариант ответа:\n\n" << question[i].hint[0] << "\n\nИЛИ\n\n" << question[i].hint[1];
+                cout << "\n\nВведите вариант ответа: ";
+                cin >> answer;
+                answer--;
+                continue;
+
+            }
+            handleError();
+            cout << "Введите вариант ответа: ";
             cin >> answer;
             answer--;
         }
 
-        if (answers[answer] == 1) {
+        if (question[i].answer[answer] == question[i].correctAnswer) {
             score++;
             cout << "Ответ верный. Вы получаете +1 балл. У вас " << score << " баллов\n";
-            system("pause");
-            system("cls");
+            waitingForInput();
         }
         else {
+            lives--;
             cout << "Ответ не верный, вы теряете 1 жизнь. У вас осталось " << lives << " жизней\n";
-            system("pause");
-            system("cls");
+            waitingForInput();
         }
 
-        if (lives < 0) {
+        if (lives < 1) {
             system("cls");
-            cout << "Вы ошиблись максимальное колличество раз. Игра закончена\n\m";
+            cout << "Вы ошиблись максимальное колличество раз. Игра закончена.\n\n";
+            break;
+        }
+
+        if (static_cast<unsigned int>(time(0)) > deadline) {
+            system("cls");
+            cout << "Вы не успели ответить на все вопросы викторины. Игра закончена.\n\n";
             break;
         }
     }
+    system("cls");
     cout << "Итоговый счет: " << score << endl;
-    system("pause");
+    waitingForInput();
 }
 
 void handleOption(int f(int), int* value, string txt) {
@@ -192,15 +238,15 @@ void handleOption(int f(int), int* value, string txt) {
     waitingForInput();
 }
 
-    void handleOptions() {
-        bool isRunning = true;
+void handleOptions() {
+    system("cls");
 
-        while (isRunning) {
-            system("cls");
-            cout << "[+]Options\n\n[1]Timer\n[2]Amount of questions\n[3]Enable/Disable 50/50\n[4]UP Points\n[5]Exit\n\n[-]Choose action: ";
+    bool isRunning = true;
 
-            cin >> choose;
-            switch (choose) {
+    while (isRunning) {
+        display("[+]Options\n\n[1]Timer\n[2]Amount of questions\n[3]Enable/Disable 50/50\n[4]UP Points\n[5]Exit\n\n[-]Choose action: ");
+
+        switch (choose) {
             case 1: {
                 handleOption(setTimer, &timer, inputTimer);
                 break;
@@ -226,37 +272,33 @@ void handleOption(int f(int), int* value, string txt) {
                 handleError();
                 break;
             }
-            }
         }
     }
+}
 
-    void handleRules() {
-        system("cls");
+void handleRules() {
+    system("cls");
 
-        cout << "Sera was never an agreeble girl\n";
-        cout << "Her tongue tell tales of rebellion\n";
-        cout << "But she was so fast, And quick with her bow,\n";
-        cout << "No one quite knew when she came from\n\n";
+    cout << "Sera was never an agreeble girl\n";
+    cout << "Her tongue tell tales of rebellion\n";
+    cout << "But she was so fast, And quick with her bow,\n";
+    cout << "No one quite knew when she came from\n\n";
 
-        waitingForInput();
+    waitingForInput();
 
-        system("cls");
-    }
+    system("cls");
+}
 
-    int main()
-    {
-        system("cls");
+int main()
+{
+    setlocale(0, "");
 
-        setlocale(0, "");
+    bool isRunning = true;
+    while (isRunning) {
+        display("[+]Quiz\n\n[1]Start\n[2]Options\n[3]Rules\n[4]Exit\n\n[-]Choose action: ");
 
-        bool isRunning = true;
-        while (isRunning) {
-            cout << up << " " << isHintEnable << " " << amountOfQuestions << " " << timer;
-            cout << "[+]Quiz\n\n[1]Start\n[2]Options\n[3]Rules\n[4]Exit\n\n[-]Choose action: ";
-            cin >> choose;
-
-            switch (choose)
-            {
+        switch (choose)
+        {
             case 1: {
                 handleGame(amountOfQuestions);
                 break;
@@ -278,7 +320,7 @@ void handleOption(int f(int), int* value, string txt) {
                 handleError();
                 break;
             }
-            }
         }
-        return 0;
     }
+    return 0;
+}
