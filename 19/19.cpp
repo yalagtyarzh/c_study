@@ -3,21 +3,29 @@
 
 using namespace std;
 
-const string inputTimer = "[+]Choosing timer duration (in minutes)\n\n[1]1\n[2]2\n[3]3\n[4]4\n[5]5\n\n Choose: ";
+//Текст для вывода меню настройки таймера
+const string inputTimer = "[+]Choosing timer duration (in minutes)\n\n[1]1\n[2]2\n[3]3\n[4]4\n[5]5\n\n Choose: "; 
+//Текст для вывода меню настройки количества вопроосов
 const string inputAmount = "[+]Choosing amount of questions\n\n[1]5\n[2]10\n[3]15\n\nChoose: ";
+//Текст для вывода меню настройки включения подсказок
 const string inputHint = "[+]Choosing 50/50 enable\n\n[1]Yes\n[2]No\n\nChoose: ";
+//Текст для вывода меню настройки количества жизнец
 const string inputUp = "[+]Choosing amount of UP\n\n[1]1\n[2]2\n[3]3\n[4]4\n[5]5\n\nChoose: ";
 
-const int answersSize = 4;
+//Дефолтные параметры для массивов структур, отвечающих за размер массива вопросов и ответов
 const int questionSize = 15;
+const int answersSize = 4;
 
+//Структура вопроса, которая хранит в себе сам вопрос, количество ответов на него, массив из двух двух подсказок
+//и правильного ответа
 struct Question {
-    string question;
-    string answer[answersSize];
-    string hint[2];
-    string correctAnswer;
+    string question; //Вопрос
+    string answer[answersSize]; //Ответы
+    string hint[2]; //Подсказки
+    string correctAnswer; //Правильный ответ
 };
 
+//Создания массива из экземляров структур question с последующим заполнением
 Question question[questionSize] = {
     {"Состав пиццы?", {"Моцарелла", "Грузовик", "Конохахаххаха", "Жмых"}, {}, "Моцарелла"},
     {"Сколько будет 1+1?", {"2", "1", "5", "10"}, {}, "2"},
@@ -36,19 +44,21 @@ Question question[questionSize] = {
     {"Третий зверь на пути колобка", {"Волк", "Заяц", "Лиса", "Колобок"}, {}, "Волк"},
 };
 
-int up = 3; //default for UP points
-int isHintEnable = 0; //default for 50/50 option
-int amountOfQuestions = 15; //default amount of questions
-int timer = 5; //default timer for game (in mintues)
+int up = 3; //Значение для количества жизней (по умолчанию 3)
+int isHintEnable = 0; //Значения для подсказки (0 - включено, 1 - выключено) (по умолчанию выключено)
+int amountOfQuestions = 15; //Количество вопросов (по умолчанию 15)
+int timer = 5; //Время, которое работает таймер (в минутах) (по умолчанию 5)
 
-int choose; //var for choosing
+int choose; //Переменная для выбора, которую осуществляет пользотель, вводя число с клавитуры
 
+//Функция, которая мешает вопросы (или, иначе говоря, мешает всё содержимое массива)
 void randomizeQuestions() {
     for (int i = 0; i < questionSize; i++) {
         swap(question[i], question[rand() % 15]);
     }
 }
 
+//Функция, которая мешает ответы на вопрос (иначе говоря, рандомится содержимое поля answer внутри структуры question)
 void randomizeAnswers() {
     for (int i = 0; i < questionSize; i++) {
         for (int j = 0; j < answersSize; j++) {
@@ -57,6 +67,7 @@ void randomizeAnswers() {
     }
 }
 
+//Функция, генерирующая подсказку внутри экземляра вопроса
 void generateHint() {
     for (int i = 0; i < questionSize; i++) {
         string incorrectAnswer = question[i].correctAnswer;
@@ -75,17 +86,21 @@ void generateHint() {
     }
 }
 
+//Функция для обработки некорректного вывода
 void handleError() {
     cin.clear();
     cin.ignore();
     cout << "\nIncorrect input\n\n";
 }
 
+//Функция для ожидания ввода пользователя
 void waitingForInput() {
     system("pause");
     cin.get();
 }
 
+//Функция, возвращающее количество вопросов викторины, размер которого зависит от параметра, которая 
+//прокидывается в эту функцию (chs)
 int setAmountOfQuestions(int chs) {
     switch (chs) {
     case 1:
@@ -100,6 +115,8 @@ int setAmountOfQuestions(int chs) {
     }
 }
 
+//Функция, возвращающее количество жизней, размер которого зависит от параметра, которая 
+//прокидывается в эту функцию (chs)
 int setUp(int chs) {
     switch (chs) {
     case 1:
@@ -118,6 +135,8 @@ int setUp(int chs) {
     }
 }
 
+//Функция, возвращающее число, которое регулирует настройки подсказки, значение которого зависит от параметра, которая 
+//прокидывается в эту функцию (chs)
 int setEnableHint(int chs) {
     switch (chs) {
     case 1:
@@ -130,6 +149,8 @@ int setEnableHint(int chs) {
     }
 }
 
+//Функция, возвращающее длительность таймера (в минутах), размер которого зависит от параметра, которая 
+//прокидывается в эту функцию (chs)
 int setTimer(int chs) {
     switch (chs) {
     case 1:
@@ -148,33 +169,42 @@ int setTimer(int chs) {
     }
 }
 
+//Функция, отвечающее за очистку и вывод текста на экран, который передается в функцию, с дальнейшим ожиданием
+//ввода выбора от пользователя
 void display(string txt) {
     system("cls");
     cout << txt;
     cin >> choose;
 }
 
+//Функция, отвечающее за саму игру, в нее передается переменная, которая отвечает за количество вопрос в викторине
 void handleGame(int arraySize) {
-    srand(static_cast<unsigned int>(time(0)));
+    srand(static_cast<unsigned int>(time(0))); //Генерация рандома
 
-    int answer;
-    int score = 0;
-    int lives = up;
+    int answer; //Переменная для хранения выбора пользователя
+    int score = 0; //Переменная для хранения количества очков
+    int lives = up; //Переменная для количества жизней
 
+    //Если настройка лдя подсказок включена - сгенерировать подсказки
     if (isHintEnable) {
         generateHint();
     }
 
+    //Рандом вопросов
     randomizeQuestions();
 
+    //Рандом ответов
     randomizeAnswers();
 
+    //Инициалация таймера, который из себя представляет время, в которое началась игра + количество секунд, в течении
+    //которого пользователь может находиться в игре
     int deadline = static_cast<unsigned int>(time(0)) + 60 * timer;
 
+    //Непосредственное начало игры
     for (int i = 0; i < arraySize; i++) {
         system("cls");
 
-        cout << "У тебя осталось: " << deadline - static_cast<unsigned int>(time(0)) << " секунд.\n\n";
+        cout << "У тебя осталось: " << deadline - static_cast<unsigned int>(time(0)) << " секунд.\nВсего жизней: " << lives << "\n\n";
 
         cout << "[" << i + 1 << "]" << question[i].question << "\n\n";
 
@@ -190,7 +220,11 @@ void handleGame(int arraySize) {
         cin >> answer;
         answer--;
 
+        //Проверка на ввод корректного значения пользователем.
+        //Если у игрока включена подсказка и было нажато "5", то вместо ошибки о некорректном вводе он
+        //получает подсказку
         while (answer < 0 || answer > 3) {
+            //Получение подсказки
             if (isHintEnable && answer == 4) {
                 cin.clear();
                 cin.ignore();
@@ -201,48 +235,60 @@ void handleGame(int arraySize) {
                 continue;
 
             }
+            //Обработка некорректного ввода
             handleError();
             cout << "Введите вариант ответа: ";
             cin >> answer;
             answer--;
         }
-
-        if (question[i].answer[answer] == question[i].correctAnswer) {
-            score++;
-            cout << "Ответ верный. Вы получаете +1 балл. У вас " << score << " баллов\n";
-            waitingForInput();
-        }
-        else {
-            lives--;
-            cout << "Ответ не верный, вы теряете 1 жизнь. У вас осталось " << lives << " жизней\n";
-            waitingForInput();
-        }
-
-        if (lives < 1) {
-            system("cls");
-            cout << "Вы ошиблись максимальное колличество раз. Игра закончена.\n\n";
-            waitingForInput();
-            break;
-        }
-
+        //Если не осталось времени - закончить игру
         if (static_cast<unsigned int>(time(0)) > deadline) {
             system("cls");
             cout << "Вы не успели ответить на все вопросы викторины. Игра закончена.\n\n";
             waitingForInput();
             break;
         }
+
+        //Если ответ является верным, то начислить пользователю 1 очко
+        if (question[i].answer[answer] == question[i].correctAnswer) {
+            score++;
+            cout << "Ответ верный. Вы получаете +1 балл. У вас " << score << " баллов\n";
+            waitingForInput();
+        }
+        //Иначе снимается 1 жизнь
+        else {
+            lives--;
+            cout << "Ответ не верный, вы теряете 1 жизнь. У вас осталось " << lives << " жизней\n";
+            waitingForInput();
+        }
+
+        //Если жизней не осталось - закончить игру
+        if (lives < 1) {
+            system("cls");
+            cout << "Вы ошиблись максимальное колличество раз. Игра закончена.\n\n";
+            waitingForInput();
+            break;
+        }
     }
+    //Вывод результатов игры
     system("cls");
     cout << "Итоговый счет: " << score << endl;
     waitingForInput();
 }
 
+//Функция, выводящая текст на экран, осуществляющий выбор от пользователя, и уже в зависимости от выбора пользователя - 
+//- вызывающее функцию, отвечающее уже за непосредственную работу с определенной настройкой
+//f(int) - функция настроек
+//value - непосредственно сама настройка, которую мы меняем (использован указатель (*), которая обращается
+//непосредтсвенно к значению, которое хранится в аргументе (иначе говоря переменной), а не лишь к копии самого значения
+//txt - текст, которую мы передаем в функцию display
 void handleOption(int f(int), int* value, string txt) {
     display(txt);
     *value = f(choose);
     waitingForInput();
 }
 
+//Функция, отвечающее за вывод меню настроек пользователю и уже непосредственный выбор вопроса
 void handleOptions() {
     system("cls");
 
@@ -281,6 +327,7 @@ void handleOptions() {
     }
 }
 
+//Функция, отвечающая за вывод правил
 void handleRules() {
     system("cls");
 
