@@ -5,11 +5,11 @@
 using namespace std;
 
 //playing fields
-string field3x3[9]{" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "};
+string field3x3[9]{ " 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 " };
 
-string field4x4[16]{" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "," 10"," 11"," 12"," 13"," 14"," 15"," 16"};
+string field4x4[16]{ " 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "," 10"," 11"," 12"," 13"," 14"," 15"," 16" };
 
-string field5x5[25]{" 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "," 10"," 11"," 12"," 13"," 14"," 15"," 16"," 17"," 18"," 19"," 20"," 21"," 22"," 23"," 24"," 25"};
+string field5x5[25]{ " 1 "," 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 "," 9 "," 10"," 11"," 12"," 13"," 14"," 15"," 16"," 17"," 18"," 19"," 20"," 21"," 22"," 23"," 24"," 25" };
 
 //color codes
 const string standart = "0";
@@ -177,10 +177,10 @@ void showField(string field[], int arrayLen) {
 
 	for (int i = 0; i < arrayLen; i++) {
 		if (field[i] == "X") {
-			cout << "|\x1b[" << colorX << "m" << "  " << field[i]  << "\x1b[0m  ";
+			cout << "|\x1b[" << colorX << "m" << "  " << field[i] << " \x1b[0m  ";
 		}
 		else if (field[i] == "O") {
-			cout << "|\x1b[" << colorO << "m" << "  " << field[i] << "\x1b[0m  ";
+			cout << "|\x1b[" << colorO << "m" << "  " << field[i] << " \x1b[0m  ";
 		}
 		else {
 			cout << "| " << field[i] << "  ";
@@ -462,108 +462,105 @@ void handleBotGame(string field[], int arrayLen) {
 int main() {
 	srand(static_cast<unsigned int>(time(0)));
 	int mainMenu;
-	
+
 	while (true) {
 		cout << "[+]Tic-tac-toe\n\n[1]Start\n[2]Options\n[3]Rules\n[4]Exit\n\n[-]Choose action: ";
 		cin >> mainMenu;
 
 		switch (mainMenu)
 		{
-			case 1: {
-				system("cls");
+		case 1: {
+			system("cls");
 
-				int gameMenu;
+			int gameMenu;
 
-				while (true) {
-					cout << "[+]Start the game\n\n[1]PvP\n[2]PvE\n[3]Exit\n\n[-]Choose action: ";
+			while (true) {
+				cout << "[+]Start the game\n\n[1]PvP\n[2]PvE\n[3]Exit\n\n[-]Choose action: ";
 
-					cin >> gameMenu;
+				cin >> gameMenu;
 
-					if (gameMenu == 1) {
-						switch (chsField) {
-							case 1: {
-								int arrayLen = sizeof(field3x3) / sizeof(field3x3[0]);
-								handlePeopleGame(field3x3, arrayLen);
-							}
-							case 2: {
-								int arrayLen = sizeof(field4x4) / sizeof(field4x4[0]);
-								handlePeopleGame(field4x4, arrayLen);
-							}
-							case 3: {
-								int arrayLen = sizeof(field5x5) / sizeof(field5x5[0]);
-								handlePeopleGame(field5x5, arrayLen);
-							}
-						}
+				if (gameMenu == 1) {
+					switch (chsField) {
+					case 1: {
+						int arrayLen = sizeof(field3x3) / sizeof(field3x3[0]);
+						handlePeopleGame(field3x3, arrayLen);
 					}
-					else if (gameMenu == 2) {
-						switch (chsField) {
-							case 1: {
-								int arrayLen = sizeof(field3x3) / sizeof(field3x3[0]);
-								handleBotGame(field3x3, arrayLen);
-							}
-							case 2: {
-								int arrayLen = sizeof(field4x4) / sizeof(field4x4[0]);
-								handleBotGame(field4x4, arrayLen);
-							}
-							case 3: {
-								int arrayLen = sizeof(field5x5) / sizeof(field5x5[0]);
-								handleBotGame(field5x5, arrayLen);
-							}
-						}
+					case 2: {
+						int arrayLen = sizeof(field4x4) / sizeof(field4x4[0]);
+						handlePeopleGame(field4x4, arrayLen);
 					}
-					else if (gameMenu == 3) {
-						system("cls");
-						break;
+					case 3: {
+						int arrayLen = sizeof(field5x5) / sizeof(field5x5[0]);
+						handlePeopleGame(field5x5, arrayLen);
 					}
-					else {
-						handleError();
 					}
 				}
-				break;
-			}
-			case 2: {
-				system("cls");
-
-				int optionMenu;
-
-				while (true) {
-					cout << "[+]Options\n\n[1]Color\n[2]First turn\n[3]Field size\n[4]Exit\n\n[-]Choose action: ";
-
-					cin >> optionMenu;
-
-					if (optionMenu == 1) {
-						handleChosenColor();
+				else if (gameMenu == 2) {
+					switch (chsField) {
+					case 1: {
+						int arrayLen = sizeof(field3x3) / sizeof(field3x3[0]);
+						handleBotGame(field3x3, arrayLen);
 					}
-					else if (optionMenu == 2) {
-
-						handleChosenTurn();
-					} 
-					else if (optionMenu == 3) {
-						handleChosenField();
+					case 2: {
+						int arrayLen = sizeof(field4x4) / sizeof(field4x4[0]);
+						handleBotGame(field4x4, arrayLen);
 					}
-					else if (optionMenu == 4) {
-						system("cls");
-						break;
+					case 3: {
+						int arrayLen = sizeof(field5x5) / sizeof(field5x5[0]);
+						handleBotGame(field5x5, arrayLen);
 					}
-					else {
-						handleError();
 					}
 				}
-				break;
+				else if (gameMenu == 3) {
+					system("cls");
+					break;
+				}
+				else {
+					handleError();
+				}
 			}
-			case 3: {			
-				handleRules();
-				break;
+			break;
+		}
+		case 2: {
+			system("cls");
+
+			int optionMenu;
+
+			while (true) {
+				cout << "[+]Options\n\n[1]Color\n[2]First turn\n[3]Field size\n[4]Exit\n\n[-]Choose action: ";
+
+				cin >> optionMenu;
+
+				if (optionMenu == 1) {
+					handleChosenColor();
+				}
+				else if (optionMenu == 2) {
+
+					handleChosenTurn();
+				}
+				else if (optionMenu == 3) {
+					handleChosenField();
+				}
+				else if (optionMenu == 4) {
+					system("cls");
+					break;
+				}
+				else {
+					handleError();
+				}
 			}
-			case 4: {	
-				handleExit();
-			}
-			default: {
-				handleError();
-			}
+			break;
+		}
+		case 3: {
+			handleRules();
+			break;
+		}
+		case 4: {
+			handleExit();
+		}
+		default: {
+			handleError();
+		}
 		}
 	}
 }
-
-
-
